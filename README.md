@@ -104,4 +104,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Example
 
-[Example](https://vt.tiktok.com/ZSPe4uuSo/)
+![Example](https://raw.githubusercontent.com/traitimtrongvag/Karaoke-Lyric/main/Example/Example-Lyric.gif)
