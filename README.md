@@ -12,6 +12,8 @@ A lightweight terminal-based karaoke application built with Rust and Ratatui.
 
 </div>
 
+![Example](https://raw.githubusercontent.com/traitimtrongvag/Karaoke-Lyric/main/Example/Example-Lyric.gif)
+
 ## Features
 
 - Real-time lyric synchronization with color-coded progress
@@ -103,7 +105,3 @@ This project is licensed under the MIT License.
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-## Example
-
-![Example](https://raw.githubusercontent.com/traitimtrongvag/Karaoke-Lyric/main/Example/Example-Lyric.gif)
