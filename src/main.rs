@@ -33,6 +33,8 @@ struct KaraokeApp {
     paused: bool,
     current_position: f64,
     song_duration: f64,
+    seek_resume_at: Option<Instant>,
+    paused_before_seek: bool,
 }
 
 impl KaraokeApp {
@@ -46,6 +48,8 @@ impl KaraokeApp {
             paused: false,
             current_position: config.start_position,
             song_duration: config.duration,
+            seek_resume_at: None,
+            paused_before_seek: false,
         }
     }
 
@@ -121,6 +125,22 @@ impl KaraokeApp {
         }
         let line = &self.lyrics[line_idx];
         current_time >= line.end_time
+    }
+
+    fn seek(&mut self, delta: f64) {
+        let new_pos = (self.get_current_time() + delta).clamp(0.0, self.song_duration);
+        self.paused_before_seek = self.paused || self.seek_resume_at.is_some();
+        self.current_position = new_pos;
+        self.start_time = Instant::now();
+        if new_pos >= self.song_duration {
+            self.paused = true;
+            self.seek_resume_at = None;
+        } else {
+            self.paused = true;
+            if !self.paused_before_seek {
+                self.seek_resume_at = Some(Instant::now() + Duration::from_millis(300));
+            }
+        }
     }
 }
 
@@ -332,6 +352,14 @@ fn main() -> Result<(), io::Error> {
             app.current_position = app.song_duration;
         }
 
+        if let Some(resume_at) = app.seek_resume_at {
+            if Instant::now() >= resume_at {
+                app.paused = false;
+                app.start_time = Instant::now();
+                app.seek_resume_at = None;
+            }
+        }
+
         let timeout = tick_rate
             .checked_sub(last_tick.elapsed())
             .unwrap_or_else(|| Duration::from_secs(0));
@@ -345,6 +373,12 @@ fn main() -> Result<(), io::Error> {
                         app.current_position = 0.0;
                         app.start_time = Instant::now();
                         app.paused = false;
+                    },
+                    KeyCode::Left => {
+                        app.seek(-0.3);
+                    },
+                    KeyCode::Right => {
+                        app.seek(0.3);
                     },
                     _ => {}
                 }
