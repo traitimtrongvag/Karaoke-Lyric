@@ -20,7 +20,6 @@ A lightweight terminal-based karaoke application built with Rust and Ratatui.
 - Smooth character-by-character highlighting
 - Progress bar with visual playback indicator
 - Pause/Resume playback control
-- Adjustable lyric timing with Up/Down arrows
 - Customizable song configuration
 
 ## Installation
@@ -52,8 +51,6 @@ cargo run
 |-----|--------|
 | `Space` | Pause/Resume playback |
 | `R` | Restart from beginning |
-| `↑` | Delay lyrics by +0.1s |
-| `↓` | Advance lyrics by -0.1s |
 | `Q` | Quit application |
 
 ## Configuration
