@@ -33,7 +33,6 @@ struct KaraokeApp {
     paused: bool,
     current_position: f64,
     song_duration: f64,
-    line_delay: f64,
 }
 
 impl KaraokeApp {
@@ -47,7 +46,6 @@ impl KaraokeApp {
             paused: false,
             current_position: config.start_position,
             song_duration: config.duration,
-            line_delay: 0.0,
         }
     }
 
@@ -79,19 +77,19 @@ impl KaraokeApp {
 
     fn get_current_line_index(&self, current_time: f64) -> Option<usize> {
         for (i, line) in self.lyrics.iter().enumerate() {
-            let adjusted_start = line.start_time + self.line_delay;
-            let adjusted_end = line.end_time + self.line_delay;
+            let adjusted_start = line.start_time;
+            let adjusted_end = line.end_time;
             if current_time >= adjusted_start && current_time < adjusted_end {
                 return Some(i);
             }
         }
         
-        if current_time >= self.lyrics.last().unwrap().end_time + self.line_delay {
+        if current_time >= self.lyrics.last().unwrap().end_time {
             return Some(self.lyrics.len() - 1);
         }
         
         for i in (0..self.lyrics.len()).rev() {
-            let adjusted_end = self.lyrics[i].end_time + self.line_delay;
+            let adjusted_end = self.lyrics[i].end_time;
             if current_time >= adjusted_end {
                 return Some(i);
             }
@@ -105,8 +103,8 @@ impl KaraokeApp {
             return 0.0;
         }
         let line = &self.lyrics[line_idx];
-        let adjusted_start = line.start_time + self.line_delay;
-        let adjusted_end = line.end_time + self.line_delay;
+        let adjusted_start = line.start_time;
+        let adjusted_end = line.end_time;
         
         if current_time < adjusted_start {
             return 0.0;
@@ -122,7 +120,7 @@ impl KaraokeApp {
             return false;
         }
         let line = &self.lyrics[line_idx];
-        current_time >= line.end_time + self.line_delay
+        current_time >= line.end_time
     }
 }
 
@@ -347,12 +345,6 @@ fn main() -> Result<(), io::Error> {
                         app.current_position = 0.0;
                         app.start_time = Instant::now();
                         app.paused = false;
-                    },
-                    KeyCode::Up => {
-                        app.line_delay += 0.1;
-                    },
-                    KeyCode::Down => {
-                        app.line_delay = (app.line_delay - 0.1).max(0.0);
                     },
                     _ => {}
                 }
