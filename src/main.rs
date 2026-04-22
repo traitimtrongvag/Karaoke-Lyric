@@ -70,12 +70,14 @@ impl KaraokeApp {
         if self.is_song_ended() {
             return;
         }
-        
-        self.paused = !self.paused;
+
         if self.paused {
-            self.current_position = self.get_current_time();
-        } else {
+            self.paused = false;
             self.start_time = Instant::now();
+        } else {
+            let now = self.current_position + self.start_time.elapsed().as_secs_f64();
+            self.current_position = now.min(self.song_duration);
+            self.paused = true;
         }
     }
 
